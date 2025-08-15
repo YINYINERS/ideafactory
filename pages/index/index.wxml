@@ -1,0 +1,74 @@
+<view class="app-container">
+  <!-- 背景图片组件 -->
+  <image 
+    class="background-image"
+    src="/images/bg-light.jpg"
+    mode="aspectFill"
+    lazy-load="{{false}}"
+  ></image>
+  
+  <!-- 背景遮罩 -->
+  <view class="background-overlay"></view>
+  
+  <!-- 内容包装器 -->
+  <view class="content-wrapper">
+    <!-- 瀑布流容器 -->
+    <scroll-view 
+      class="scroll-container"
+      scroll-y="true"
+      enhanced="true"
+      bounces="true"
+      show-scrollbar="false"
+      fast-deceleration="false"
+    >
+      <!-- 头部 - 移到滚动区域内 -->
+      <view class="header">
+        <view class="title-main">idea Factory</view>
+        <view class="title-sub">Creative.YIN</view>
+      </view>
+
+      <view class="waterfall-container">
+        <view class="waterfall-column">
+          <!-- 左列卡片 -->
+          <view wx:for="{{leftCards}}" wx:key="id" class="card glass-card {{item.className}}" bindtap="navigateTo" data-url="{{item.url}}">
+            <!-- 顶部图标行 -->
+            <view class="card-icon-row">
+              <view class="card-icon {{item.iconClass}}">
+                <image class="icon-image" src="{{item.iconSrc}}" mode="aspectFit" />
+              </view>
+              <view wx:if="{{item.showStatus}}" class="card-status status-coming">Beta</view>
+            </view>
+            
+            <!-- 底部文字区域 -->
+            <view class="card-text-area">
+              <view class="card-title">{{item.title}}</view>
+              <view class="card-description">{{item.description}}</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="waterfall-column">
+          <!-- 右列卡片 -->
+          <view wx:for="{{rightCards}}" wx:key="id" class="card glass-card {{item.className}}" bindtap="navigateTo" data-url="{{item.url}}">
+            <!-- 顶部图标行 -->
+            <view class="card-icon-row">
+              <view class="card-icon {{item.iconClass}} icon-color-{{item.iconColor}}">
+  <image class="icon-image" src="{{item.iconSrc}}" mode="aspectFit" />
+</view>
+              <view wx:if="{{item.showStatus}}" class="card-status status-coming">Beta</view>
+            </view>
+            
+            <!-- 底部文字区域 -->
+            <view class="card-text-area">
+              <view class="card-title">{{item.title}}</view>
+              <view class="card-description">{{item.description}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 底部占位 -->
+      <view style="height: 100rpx;"></view>
+    </scroll-view>
+  </view>
+</view>

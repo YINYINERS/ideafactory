@@ -1,0 +1,98 @@
+<view class="container">
+  <!-- 背景层 -->
+  <view class="bg-container">
+    <image 
+      class="bg-image" 
+      src="/images/bg-dark.jpg"
+      mode="aspectFill"
+    ></image>
+    <view class="bg-mask"></view>
+  </view>
+
+  <!-- 主内容区 -->
+  <view class="main-content">
+    <!-- 头部导航 -->
+    <view class="header">
+      <button class="header-btn" bindtap="onBack">
+        <image src="/icons/arrow-left.png" class="icon"></image>
+      </button>
+      <view class="header-title">
+        <text class="title-main">ConvoCraft</text>
+        <text class="title-sub">UX Audit Assistant</text>
+      </view>
+      <button class="header-btn" bindtap="onMenu">
+        <image src="/icons/menu.png" class="icon"></image>
+      </button>
+    </view>
+
+    <!-- 功能按钮区 -->
+    <view class="function-btns">
+      <button class="func-btn">Reduce</button>
+      <button class="func-btn">Translate</button>
+      <button class="func-btn">Explain</button>
+    </view>
+
+    <!-- 聊天消息区 -->
+    <scroll-view 
+      class="message-container" 
+      scroll-y
+      scroll-with-animation
+      scroll-top="{{scrollTop}}"
+      bindscrolltolower="onScrollToLower"
+    >
+      <view class="messages">
+        <block wx:for="{{messages}}" wx:key="id">
+          <view class="message-item {{item.type}}">
+            <view class="avatar">{{item.type === 'ai' ? '✨' : '👤'}}</view>
+            <view class="bubble">
+              <text class="content">{{item.content}}</text>
+              <text class="timestamp">{{formatTime(item.timestamp)}}</text>
+              <view 
+                wx:if="{{item.type === 'ai'}}" 
+                class="action-btn" 
+                bindtap="onCopy" 
+                data-content="{{item.content}}"
+              >
+                <image src="/icons/copy.png" class="icon"></image>
+              </view>
+            </view>
+          </view>
+        </block>
+
+        <!-- 正在输入指示器 -->
+        <view wx:if="{{isTyping}}" class="message-item ai">
+          <view class="avatar">✨</view>
+          <view class="typing-indicator">
+            <text class="typing-text">AI正在思考...</text>
+            <view class="typing-dots">
+              <view class="dot"></view>
+              <view class="dot"></view>
+              <view class="dot"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 输入区域 -->
+    <view class="input-area">
+      <textarea 
+        class="input-box"
+        placeholder="输入你的问题..."
+        value="{{inputText}}"
+        bindinput="onInputChange"
+        bindconfirm="sendMessage"
+        auto-height
+        maxlength="500"
+        fixed="{{true}}"
+      ></textarea>
+      <button 
+        class="send-btn {{inputText.trim() ? 'active' : ''}}" 
+        bindtap="sendMessage"
+        disabled="{{!inputText.trim() || isTyping}}"
+      >
+        <image src="/icons/send.png" class="icon"></image>
+      </button>
+    </view>
+  </view>
+</view>
