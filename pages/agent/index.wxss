@@ -57,7 +57,7 @@ page {
   pointer-events: auto;
   
   /* 边框和圆角 */
-  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
 }
 
 /* 状态栏占位符 - 避免内容被遮挡 */
@@ -428,8 +428,8 @@ page {
   
   /* 🎯 修改这两行来控制模糊效果 */
   background: rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(5rpx) saturate(1.5) !important;
-  -webkit-backdrop-filter: blur(5rpx) saturate(1.5) !important;
+  backdrop-filter: blur(25rpx) saturate(1.5) !important;
+  -webkit-backdrop-filter: blur(25rpx) saturate(1.5) !important;
   
   border: 1rpx solid rgba(255, 255, 255, 0.3);
   border-radius: 32rpx;

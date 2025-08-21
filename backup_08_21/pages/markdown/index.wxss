@@ -1,0 +1,840 @@
+/* 全局重置和基础样式 */
+page {
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  color: #1c1c1e;
+}
+
+.app-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* 背景图片 */
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  object-fit: cover;
+}
+
+/* 背景遮罩 - 减少透明度让背景更清晰 */
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    180deg, 
+    rgba(248, 249, 250, 0.2) 0%, /* 减少遮罩强度 */
+    rgba(248, 249, 250, 0.3) 50%,
+    rgba(248, 249, 250, 0.4) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 内容包装器 */
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* 全屏输入模式 - 重新设计 */
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  
+  /* 确保容器尺寸正确 */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  
+  /* 初始状态：从底部滑入 */
+  opacity: 0;
+  transform: translateY(100%);
+  visibility: hidden;
+  
+  /* 平滑过渡动画 */
+  transition: 
+    opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    visibility 0s linear 0.6s;
+}
+
+.fullscreen-modal.active {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition: 
+    opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    visibility 0s linear 0s;
+}
+
+/* 全屏头部 - 重新设计为标题和字数计数器 */
+.fullscreen-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 32rpx 32rpx 24rpx;
+  border-bottom: 1px solid rgba(229, 229, 234, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0; /* 防止被压缩 */
+  
+  /* 头部延迟动画 */
+  opacity: 0;
+  transform: translateY(-30rpx);
+  transition: 
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: 0.2s;
+}
+
+.fullscreen-modal.active .fullscreen-header {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fullscreen-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1c1c1e;
+  flex: 1;
+}
+
+/* 全屏字数计数器 - 放在右上角 */
+.fullscreen-char-counter {
+  font-size: 26rpx;
+  color: #8e8e93;
+  font-weight: 400;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+/* 全屏滚动包装器 - 调整高度以适应底部按钮栏 */
+.fullscreen-scroll-wrapper {
+  flex: 1;
+  width: 100%;
+  height: calc(100% - 120rpx); /* 减去底部按钮栏的高度 */
+  
+  /* 延迟动画 */
+  opacity: 0;
+  transform: translateY(30rpx);
+  transition: 
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: 0.4s;
+  
+  /* 确保滚动容器正确 */
+  overflow: hidden;
+  position: relative;
+  
+  /* iOS风格的滚动 */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.fullscreen-modal.active .fullscreen-scroll-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 滚动时的额外效果 */
+.fullscreen-scroll-wrapper.scrolling {
+  /* 可以添加一些视觉反馈 */
+  transition: transform 0.1s ease-out;
+}
+
+/* 全屏内容包装器 - 调整底部间距 */
+.fullscreen-content-wrapper {
+  min-height: calc(100vh - 280rpx); /* 调整高度以适应新布局 */
+  width: 100%;
+  position: relative;
+  padding-bottom: 60rpx; /* 减少底部空间 */
+}
+
+/* 全屏文本区域 - 调整高度 */
+.fullscreen-textarea {
+  width: 100%;
+  min-height: calc(100vh - 280rpx); /* 调整高度 */
+  padding: 32rpx;
+  font-size: 32rpx;
+  line-height: 1.6;
+  background-color: transparent;
+  border: none;
+  box-sizing: border-box;
+  resize: none;
+  outline: none;
+  color: #1c1c1e;
+  
+  /* 关键：让textarea自适应高度，不产生自己的滚动条 */
+  overflow: visible;
+  height: auto;
+  max-height: none;
+  
+  /* 确保文本输入流畅 */
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+/* 底部占位空间 - 减少高度 */
+.fullscreen-bottom-spacer {
+  height: 100rpx;
+  width: 100%;
+}
+
+/* 全屏底部按钮栏 - 新增 */
+.fullscreen-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); /* 适配安全区域 */
+  border-top: 1px solid rgba(229, 229, 234, 0.8);
+  background-color: rgba(248, 249, 250, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  
+  /* 固定在底部 */
+  position: relative;
+  z-index: 10;
+  
+  /* 底部延迟动画 */
+  opacity: 0;
+  transform: translateY(20rpx);
+  transition: 
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+  transition-delay: 0.3s;
+}
+
+.fullscreen-modal.active .fullscreen-bottom-bar {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 全屏清空按钮 - 添加宽度控制 */
+.btn-fullscreen-clear {
+  background-color: rgba(255, 59, 48, 0.1) !important;
+  color: #ff3b30 !important;
+  border: none !important;
+  border-radius: 20rpx !important;
+  padding: 16rpx 32rpx !important;
+  font-size: 30rpx !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease-out !important;
+  margin: 0 !important;
+  min-width: auto !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  letter-spacing: 2rpx !important;
+  
+  /* 添加宽度控制 */
+  width: 330rpx !important;
+}
+
+.btn-fullscreen-clear::after {
+  border: none !important;
+  background: none !important;
+}
+
+.btn-fullscreen-clear:active {
+  background-color: rgba(255, 59, 48, 0.2) !important;
+  color: #ff6b6b !important;
+  transform: scale(0.96) !important;
+}
+
+/* 全屏完成按钮 - 添加宽度控制 */
+.btn-fullscreen-done {
+  background-color: #34c759 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 20rpx !important;
+  padding: 16rpx 32rpx !important;
+  font-size: 30rpx !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease-out !important;
+  margin: 0 !important;
+  min-width: auto !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  letter-spacing: 2rpx !important;
+  box-shadow: 0 4rpx 12rpx rgba(52, 199, 89, 0.3);
+  
+  /* 添加宽度控制 */
+  width: 330rpx !important;
+}
+
+.btn-fullscreen-done::after {
+  border: none !important;
+  background: none !important;
+}
+
+.btn-fullscreen-done:active {
+  background-color: #30d158 !important;
+  transform: scale(0.96) !important;
+  box-shadow: 0 2rpx 8rpx rgba(52, 199, 89, 0.4);
+}
+
+/* 主界面 - 平滑退出效果 */
+.main-content {
+  position: relative;
+  height: 100vh;
+  transition: 
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out,
+    filter 0.4s ease-out;
+}
+
+.main-content.hidden {
+  opacity: 0.2;
+  transform: scale(0.98);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* scroll-view容器样式 */
+.scroll-container {
+  width: 100%;
+  height: calc(100vh - 186rpx);
+}
+
+/* 内容区域包装器 */
+.content-inner {
+  padding: 0 24rpx;
+}
+
+/* 顶部导航 */
+.nav-header {
+  padding: 60rpx 0 40rpx;
+  text-align: center;
+}
+
+.title-main {
+  display: block;
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #3e216d;
+  margin-bottom: 8rpx;
+  text-shadow: 0 1rpx 3rpx rgba(255, 255, 255, 0);
+}
+
+.title-sub {
+  font-size: 28rpx;
+  color: #8e8e93;
+  font-weight: 400;
+  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0);
+}
+
+/* 卡片基础样式 - 毛玻璃效果 */
+.input-card, .settings-card, .preview-card {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 
+    0 2rpx 16rpx rgba(0, 0, 0, 0.08),
+    0 0 0 1rpx rgba(255, 255, 255, 0.2);
+  transition: 
+    backdrop-filter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    -webkit-backdrop-filter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    background-color 0.4s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+/* 点击时增加模糊度 */
+.input-card:active, 
+.settings-card:active, 
+.preview-card:active {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(80px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 
+    0 8rpx 32rpx rgba(0, 0, 0, 0.15),
+    0 0 0 2rpx rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.card-header {
+  padding: 32rpx 32rpx 24rpx;
+  border-bottom: 1px solid rgba(242, 242, 247, 0.6);
+}
+
+.section-label {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1c1c1e;
+}
+
+/* 输入区域 */
+.input-container {
+  position: relative;
+  padding: 0 32rpx;
+}
+
+.text-input {
+  width: 100%;
+  min-height: 320rpx;
+  padding: 24rpx 0;
+  font-size: 30rpx;
+  line-height: 1.6;
+  background-color: transparent;
+  border: none;
+  color: #1c1c1e;
+}
+
+/* 修改后的输入操作区域 */
+.input-actions {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 24rpx 32rpx 32rpx;
+  gap: 24rpx; /* 添加间距控制 */
+}
+
+.char-counter {
+  font-size: 24rpx;
+  color: #8e8e93;
+  flex: 1;
+  text-align: left; /* 改为左对齐 */
+}
+
+/* 全屏输入按钮 - 修改样式 */
+.btn-fullscreen {
+  background-color: transparent !important;
+  color: #6e6e6e !important; /* 暗灰色 */
+  border: none !important;
+  font-size: 28rpx !important;
+  font-weight: 400 !important; /* 不加粗 */
+  border-radius: 0 !important; /* 移除圆角 */
+  transition: color 0.2s ease !important; /* 只过渡颜色 */
+  flex-shrink: 0 !important;
+  width: 150rpx !important;
+  height: 50rpx !important;
+  line-height: 50rpx !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.btn-fullscreen::after {
+  border: none !important;
+  background: none !important;
+}
+
+.btn-fullscreen:active {
+  background-color: transparent !important; /* 保持背景透明 */
+  color: #0297fa !important; /* 亮蓝色 */
+  transform: none !important; /* 移除缩放效果 */
+}
+
+.btn-clear {
+  background-color: transparent !important;
+  color: #ff3b30 !important;
+  border: none !important;
+  font-size: 28rpx !important;
+  font-weight: 500 !important;
+  border-radius: 12rpx !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+  width: 80rpx !important;
+  height: 50rpx !important;
+  line-height: 50rpx !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.btn-clear::after {
+  border: none !important;
+  background: none !important;
+}
+
+.btn-clear:active {
+  background-color: #ff3b30 !important;
+  color: #ffffff !important;
+  transform: scale(0.96) !important;
+}
+
+/* 设置区域 */
+.setting-group {
+  padding: 32rpx;
+  border-bottom: 1px solid rgba(242, 242, 247, 0.6);
+}
+
+.setting-group:last-child {
+  border-bottom: none;
+}
+
+.setting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.setting-label {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1c1c1e;
+}
+
+.setting-value {
+  font-size: 28rpx;
+  color: #34c759;
+  font-weight: 600;
+}
+
+/* 颜色选择器 */
+.color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.color-option {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  border: 3rpx solid transparent;
+  transition: all 0.3s ease-out;
+  position: relative;
+}
+
+.color-option.selected {
+  border-color: #34c759;
+  transform: scale(1.1);
+  box-shadow: 0 4rpx 16rpx rgba(52, 199, 89, 0.3);
+}
+
+.color-option:active {
+  transform: scale(0.95);
+}
+
+/* 滑块样式 */
+.custom-slider {
+  margin-top: 8rpx;
+}
+
+/* 选择器样式 */
+.picker-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  margin-top: 16rpx;
+  border-radius: 12rpx;
+  background-color: rgba(242, 242, 247, 0.8);
+  transition: all 0.2s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+.picker-button:active {
+  background-color: rgba(229, 229, 234, 0.9);
+  transform: scale(0.98);
+}
+
+.picker-text {
+  font-size: 30rpx;
+  color: #1c1c1e;
+  font-weight: 500;
+}
+
+.picker-arrow {
+  font-size: 32rpx;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+/* 预览区域 */
+.preview-container {
+  margin: 0 32rpx 32rpx;
+  border-radius: 12rpx;
+  min-height: 200rpx;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.preview-text {
+  display: block;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  color: inherit;
+}
+
+/* 生成按钮 - 半透明背景 */
+.action-area {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  padding: 50rpx;
+  background: rgba(248, 249, 250, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  border-top: 1rpx solid rgba(255, 255, 255, 0);
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0);
+}
+
+.btn-generate {
+  width: 700rpx !important;
+  height: 96rpx !important;
+  background: linear-gradient(135deg, #34c759 0%, #30d158 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 24rpx !important;
+  font-size: 32rpx !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 8rpx 24rpx rgba(52, 199, 89, 0.3) !important;
+  transition: all 0.3s ease-out !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: auto !important;
+}
+
+.btn-generate::after {
+  border: none !important;
+}
+
+.btn-generate:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(52, 199, 89, 0.4);
+}
+
+.btn-generate[disabled] {
+  background: #e5e5ea;
+  color: #8e8e93;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-generate.loading {
+  background: #8e8e93;
+}
+
+.btn-text {
+  transition: all 0.2s ease;
+}
+
+/* Canvas */
+.hidden-canvas {
+  position: fixed;
+  top: -99999rpx;
+  left: -99999rpx;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 750rpx) {
+  .color-grid {
+    justify-content: center;
+  }
+  
+  .nav-header {
+    padding: 40rpx 0 32rpx;
+  }
+  
+  .title-main {
+    font-size: 48rpx;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  page {
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  .app-container {
+    background: linear-gradient(180deg, #000000 0%, #1c1c1e 100%);
+  }
+  
+  .background-overlay {
+    background: linear-gradient(
+      180deg, 
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(28, 28, 30, 0.3) 50%,
+      rgba(28, 28, 30, 0.4) 100%
+    );
+  }
+  
+  .input-card, .settings-card, .preview-card {
+    background-color: rgba(28, 28, 30, 0.85);
+    border: 1rpx solid rgba(99, 99, 102, 0.1);
+  }
+  
+  .input-card:active, 
+  .settings-card:active, 
+  .preview-card:active {
+    background-color: rgba(28, 28, 30, 0.7);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: 
+      0 8rpx 32rpx rgba(0, 0, 0, 0.3),
+      0 0 0 2rpx rgba(99, 99, 102, 0.4);
+  }
+  
+  .card-header {
+    border-bottom: 1px solid rgba(99, 99, 102, 0.3);
+  }
+  
+  .title-main {
+    color: #ffffff;
+  }
+  
+  .section-label, .setting-label {
+    color: #ffffff;
+  }
+  
+  .text-input {
+    color: #ffffff;
+  }
+  
+  .fullscreen-textarea {
+    color: #ffffff;
+  }
+  
+  .fullscreen-char-counter {
+    color: #8e8e93;
+  }
+  
+  .fullscreen-bottom-bar {
+    background-color: rgba(28, 28, 30, 0.95);
+    border-top: 1px solid rgba(99, 99, 102, 0.3);
+  }
+  
+  /* 全屏清空按钮 - 添加宽度控制 */
+  .btn-fullscreen-clear {
+    background-color: rgba(255, 59, 48, 0.1) !important;
+    color: #ff3b30 !important;
+    border: none !important;
+    border-radius: 20rpx !important;
+    padding: 16rpx 32rpx !important;
+    font-size: 30rpx !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease-out !important;
+    margin: 0 !important;
+    min-width: auto !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    letter-spacing: 2rpx !important;
+    
+    /* 添加宽度控制 */
+    width: 140rpx !important;
+  }
+  
+  .btn-fullscreen-clear::after {
+    border: none !important;
+    background: none !important;
+  }
+  
+  .btn-fullscreen-clear:active {
+    background-color: rgba(255, 59, 48, 0.2) !important;
+    color: #ff6b6b !important;
+    transform: scale(0.96) !important;
+  }
+  
+  .picker-button {
+    background-color: rgba(99, 99, 102, 0.3);
+  }
+  
+  .picker-button:active {
+    background-color: rgba(99, 99, 102, 0.5);
+  }
+}
+
+/* 加载状态动画 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.btn-generate.loading .btn-text {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 区域标题样式 - 修改为不使用滤镜 */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 12rpx; /* icon和文字之间的间距 */
+}
+
+/* 区域图标样式 - 去掉滤镜，保持原始颜色和大小 */
+.section-icon {
+  width: 48rpx;
+  height: 48rpx;
+  /* 移除所有滤镜效果，保持图标原始颜色 */
+}
+
+/* 区域文字样式 */
+.section-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1c1c1e;
+  letter-spacing: 0.5rpx;
+}
+
+/* 深色模式下的区域文字颜色 */
+@media (prefers-color-scheme: dark) {
+  .section-text {
+    color: #ffffff;
+  }
+}
