@@ -46,7 +46,7 @@
     }
   },
   "compileType": "miniprogram",
-  "libVersion": "2.19.4",
+  "libVersion": "3.8.11",
   "appid": "wx7f1c4d469a862f30",
   "projectname": "yin-art-planet",
   "isGameTourist": false,

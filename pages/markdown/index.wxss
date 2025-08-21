@@ -619,12 +619,12 @@ page {
   left: 50%;
   transform: translateX(-50%);
   width: auto;
-  padding: 45rpx;
-  background: rgba(248, 249, 250, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1rpx solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+  padding: 50rpx;
+  background: rgba(248, 249, 250, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  border-top: 1rpx solid rgba(255, 255, 255, 0);
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0);
 }
 
 .btn-generate {
